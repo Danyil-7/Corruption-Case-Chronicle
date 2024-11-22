@@ -1,325 +1,826 @@
-1. Architectural Overview
-The architecture is divided into several key layers and components to ensure scalability, reliability, security, and ease of use:
-Data Collection & Integration Layer
-Data Storage Layer
-Backend Services Layer
-Frontend/User Interface Layer
-Security & Privacy Layer
-Analytics & Reporting Layer
-DevOps & Infrastructure Layer
-Each layer interacts seamlessly to provide a robust platform for documenting and accessing corruption cases globally.
+4. Architectural Overview for MVP
+While the full architecture encompasses multiple layers and components, the MVP will focus on the following simplified structure:
+4.1. Simplified System Architecture
 
-2. Detailed Components and Technologies
-2.1. Data Collection & Integration Layer
-Purpose: Gather, aggregate, and verify data from diverse sources to maintain high data integrity.
-Components:
-Data Sources:
+graph TD
+    subgraph Data Collection
+        A[Manual Data Entry] --> B(Backend API)
+        C[Partner API] --> B
+    end
 
+    subgraph Data Verification
+        B --> D[Automated Checks]
+        D --> E[Manual Review]
+        E --> F[Database]
+    end
 
-Partners: International watchdogs, transparency organizations, media outlets.
-APIs & Feeds: Integrate with external APIs for real-time data ingestion.
-Manual Entry: Secure portals for partners to submit data directly.
-Whistleblower Interface: Secure, anonymous channels for submitting corruption cases.
-ETL (Extract, Transform, Load) Pipeline:
+    subgraph Data Storage
+        F[PostgreSQL Database] --> G[Backend Services]
+    end
 
+    subgraph User Interface
+        H[Web Application] --> G
+    end
 
-Extraction: Automated scripts to pull data from APIs, databases, and documents.
-Transformation: Normalization, deduplication, and enrichment of data.
-Loading: Inserting transformed data into the central database.
-Data Verification Module:
+    subgraph Security
+        I[Authentication] --> G
+        J[Encryption] --> F
+    end
 
-
-Multi-layered Verification: Cross-referencing data from multiple sources.
-Machine Learning: Automated checks for inconsistencies and potential inaccuracies.
-Human Review: Manual verification by data analysts for critical cases.
-Technologies:
-ETL Tools: Apache NiFi, Talend, or custom-built ETL pipelines using Python.
-APIs Integration: RESTful APIs, GraphQL for flexible data queries.
-Machine Learning: Python with libraries like TensorFlow or scikit-learn for data validation.
-2.2. Data Storage Layer
-Purpose: Securely store and manage vast amounts of structured and unstructured data with high availability and scalability.
-Components:
-Primary Database:
+    subgraph Analytics
+        K[Google Analytics] --> H
+    end
 
 
-Relational Database: PostgreSQL or MySQL for structured data (e.g., case details, entities).
-NoSQL Database: MongoDB or Elasticsearch for unstructured data and advanced search capabilities.
-Data Warehouse:
+4.2. Description
+Data Collection:
 
 
-Purpose: For analytics and reporting.
-Solution: Amazon Redshift, Google BigQuery, or Snowflake.
-Data Lake:
+Data is ingested via manual entries from administrators or through APIs from one or two partner sources.
+Data Verification:
 
 
-Purpose: Store raw data for future processing.
-Solution: AWS S3, Azure Data Lake, or Google Cloud Storage.
-Technologies:
-Database Management Systems: PostgreSQL, MongoDB.
-Search Engine: Elasticsearch for powerful search functionality.
-Cloud Storage: AWS, Azure, or Google Cloud for scalability and reliability.
-2.3. Backend Services Layer
-Purpose: Handle business logic, data processing, and serve data to the frontend through APIs.
-Components:
-API Gateway:
-
-
-Function: Manage API requests, rate limiting, and routing.
-Solution: AWS API Gateway, Kong, or Apigee.
-Microservices:
-
-
-Case Management Service: CRUD operations for corruption cases.
-User Management Service: Authentication, authorization, and user profiles.
-Search Service: Advanced search and filtering capabilities.
-Analytics Service: Handle data analytics requests.
-Authentication & Authorization:
-
-
-OAuth 2.0 / OpenID Connect: Secure user authentication.
-Role-Based Access Control (RBAC): Different access levels for administrators, reviewers, and users.
-Technologies:
-Programming Languages: Node.js, Python (Django/Flask), or Java (Spring Boot).
-API Frameworks: Express.js, FastAPI, or Spring MVC.
-Authentication Libraries: Auth0, Keycloak, or Firebase Authentication.
-2.4. Frontend/User Interface Layer
-Purpose: Provide an intuitive, user-friendly interface for accessing and visualizing corruption data.
-Components:
-Web Application:
-
-
-Dashboard: Overview of global corruption data, recent cases, and statistics.
-Search & Filters: Advanced search with multiple filters (e.g., country, year, sector).
-Data Visualization: Interactive charts, maps, timelines.
-Case Details Page: Comprehensive information on each corruption case.
-Reporting Interface: For whistleblowers to submit cases anonymously.
-Responsive Design:
-
-
-Ensure accessibility across devices (desktop, tablet, mobile).
-Accessibility Features:
-
-
-Compliance with WCAG standards for users with disabilities.
-Technologies:
-Frontend Frameworks: React.js, Vue.js, or Angular.
-Visualization Libraries: D3.js, Chart.js, Leaflet for maps.
-UI Libraries: Material-UI, Bootstrap, or Tailwind CSS.
-State Management: Redux, Vuex, or Context API.
-2.5. Security & Privacy Layer
-Purpose: Protect sensitive information, ensure data integrity, and maintain user privacy.
-Components:
-Data Encryption:
-
-
-At Rest: AES-256 encryption for stored data.
-In Transit: TLS/SSL for data transmission.
-Secure Reporting Network:
-
-
-Anonymous Submission: TOR integration or VPN support for whistleblowers.
-End-to-End Encryption: Ensure data is encrypted from submission to storage.
-Security Audits:
-
-
-Regular Penetration Testing: Identify and fix vulnerabilities.
-Automated Security Scanning: Integrate tools like Snyk or OWASP ZAP.
-Compliance:
-
-
-GDPR, CCPA: Ensure data handling complies with international privacy laws.
-Data Anonymization: Remove personally identifiable information where necessary.
-Technologies:
-Encryption Tools: OpenSSL, HashiCorp Vault for key management.
-Security Services: AWS Shield, Cloudflare for DDoS protection.
-Monitoring: Splunk, ELK Stack for security monitoring and logging.
-2.6. Analytics & Reporting Layer
-Purpose: Track user engagement, platform performance, and provide insights for continuous improvement.
-Components:
-User Analytics:
-
-
-Metrics: Page views, user sessions, search queries, time spent.
-Tools: Google Analytics, Mixpanel, or Matomo.
-Platform Analytics:
-
-
-Performance Monitoring: Server response times, database queries, uptime.
-Tools: New Relic, Datadog, or Prometheus.
-Reporting Tools:
-
-
-Custom Dashboards: Visualize key metrics and trends.
-Automated Reports: Schedule and distribute reports to stakeholders.
-Technologies:
-Analytics Platforms: Google Analytics, Mixpanel.
-Monitoring Tools: Prometheus, Grafana, New Relic.
-Business Intelligence: Tableau, Power BI, or Looker for advanced reporting.
-2.7. DevOps & Infrastructure Layer
-Purpose: Ensure seamless deployment, scalability, and maintenance of the platform.
-Components:
-Cloud Infrastructure:
-
-
-Providers: AWS, Azure, or Google Cloud Platform.
-Services: Compute (EC2, Kubernetes), Storage, Networking.
-Containerization & Orchestration:
-
-
-Docker: Containerize applications for consistency across environments.
-Kubernetes: Orchestrate containers for scalability and reliability.
-Continuous Integration/Continuous Deployment (CI/CD):
-
-
-Pipelines: Automated testing, building, and deployment.
-Tools: Jenkins, GitHub Actions, GitLab CI, or CircleCI.
-Version Control:
-
-
-System: Git with repositories hosted on GitHub, GitLab, or Bitbucket.
-Infrastructure as Code (IaC):
-
-
-Tools: Terraform, Ansible, or AWS CloudFormation for managing infrastructure.
-Technologies:
-Container Platforms: Docker, Kubernetes.
-CI/CD Tools: Jenkins, GitHub Actions.
-IaC Tools: Terraform, Ansible.
-
-3. Data Flow and Interaction
-Data Ingestion:
-
-
-Partners submit data via APIs, manual entry, or anonymous reporting channels.
-ETL pipelines process and verify the data before loading it into the database.
+Automated scripts perform initial data validation.
+Designated data analysts manually review and approve data before it is stored.
 Data Storage:
 
 
-Verified data is stored in relational and NoSQL databases.
-Raw data is kept in data lakes for future use.
-Backend Processing:
+Verified data is stored in a PostgreSQL database, ensuring structured and reliable storage.
+Backend Services:
 
 
-Backend services handle API requests from the frontend.
-Business logic processes data, manages user authentication, and handles searches.
-Frontend Interaction:
+Node.js with Express.js handles API requests, serves data to the frontend, and manages business logic.
+User Interface:
 
 
-Users interact with the web application to search, view, and visualize corruption cases.
-Interactive elements like maps and charts fetch data via APIs and render it dynamically.
-Security Enforcement:
+A React.js-based web application allows users to search, filter, and view corruption cases.
+Security:
 
 
-All data transactions are encrypted.
-Access controls ensure users see only authorized data.
-Analytics Collection:
+Implement authentication using JWT to secure admin and data contributor access.
+Ensure all data transmissions are encrypted using TLS/SSL, and sensitive data in the database is encrypted at rest.
+Analytics:
 
 
-User interactions and platform performance data are collected for analysis.
-Insights drive platform improvements and feature enhancements.
+Integrate Google Analytics to monitor user interactions and platform usage.
 
-4. Technology Stack Recommendations
-4.1. Frontend
-Framework: React.js
-State Management: Redux
-Visualization: D3.js, Leaflet
-Styling: Material-UI
-4.2. Backend
-Framework: Node.js with Express.js or Python with Django/Flask
-API: RESTful APIs or GraphQL
-Authentication: OAuth 2.0 with JWT
-4.3. Database
-Relational: PostgreSQL
-NoSQL/Search: Elasticsearch
-Data Warehouse: Snowflake
-Data Lake: AWS S3
-4.4. DevOps
-Containerization: Docker
-Orchestration: Kubernetes
-CI/CD: GitHub Actions
-Monitoring: Prometheus and Grafana
-4.5. Security
-Encryption: TLS/SSL, AES-256
-VPN Integration: For secure whistleblower submissions
-Security Tools: OWASP ZAP, Snyk
+PSEUDO CODE (MVP):
 
-5. Scalability and Performance Considerations
-Microservices Architecture: Allows independent scaling of services based on demand.
-Load Balancing: Distribute traffic efficiently across servers using tools like NGINX or HAProxy.
-Caching: Implement caching mechanisms (e.g., Redis, CDN) to reduce latency.
-Database Optimization: Indexing, query optimization, and sharding for handling large datasets.
-Autoscaling: Automatically adjust resources based on traffic using cloud provider features.
+Data Models:
+PostgreSQL Schema:
 
-6. Security and Privacy Measures
-Data Encryption:
+-- Table: users
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'data_analyst', 'user') DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
+-- Table: corruption_cases
+CREATE TABLE corruption_cases (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    year INT NOT NULL,
+    sector VARCHAR(100),
+    submitted_by INT REFERENCES users(id),
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-Encrypt sensitive data both at rest and in transit.
-Use secure key management practices.
-Authentication & Authorization:
+-- Table: case_verifications
+CREATE TABLE case_verifications (
+    id SERIAL PRIMARY KEY,
+    case_id INT REFERENCES corruption_cases(id),
+    verified_by INT REFERENCES users(id),
+    verification_status ENUM('approved', 'rejected'),
+    comments TEXT,
+    verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
+Backend APIs (Node.js along with Express.js)
+Authentication
+User Registration
 
-Implement strong authentication (e.g., multi-factor authentication).
-Fine-grained access controls to restrict data access based on user roles.
-Anonymous Reporting:
+function registerUser(username, email, password, role='user') {
+    // Validate input data
+    if (!validateUsername(username) || !validateEmail(email) || !validatePassword(password)) {
+        return error("Invalid input data");
+    }
 
+    // Check if user already exists
+    if (database.findUserByEmail(email) || database.findUserByUsername(username)) {
+        return error("User already exists");
+    }
 
-Utilize TOR or VPNs to protect whistleblowers' identities.
-Ensure that submissions cannot be traced back to the source.
-Regular Security Audits:
+    // Hash the password
+    hashedPassword = hashPassword(password);
 
+    // Create new user
+    user = database.createUser({
+        username: username,
+        email: email,
+        password_hash: hashedPassword,
+        role: role
+    });
 
-Schedule periodic penetration testing and vulnerability assessments.
-Stay updated with security patches and updates.
-Compliance:
+    // Generate JWT token
+    token = generateJWT(user.id, user.role);
 
-
-Adhere to international data protection regulations like GDPR and CCPA.
-Implement data anonymization where necessary to protect privacy.
-
-7. User Roles and Permissions
-Administrators:
-
-
-Manage platform settings, user roles, and oversee data integrity.
-Access to all data and system functionalities.
-Data Analysts/Reviewers:
-
-
-Verify and approve submitted corruption cases.
-Manage data sources and ensure accurate data representation.
-Journalists/Researchers:
+    return success({ user: user, token: token });
+}
 
 
-Access to comprehensive data for reporting and analysis.
-Ability to export data for external use.
-General Users/Citizens:
+User Login
+	
+function loginUser(email, password) {
+    // Retrieve user by email
+    user = database.findUserByEmail(email);
+    if (!user) {
+        return error("User not found");
+    }
+
+    // Verify password
+    if (!verifyPassword(password, user.password_hash)) {
+        return error("Incorrect password");
+    }
+
+    // Generate JWT token
+    token = generateJWT(user.id, user.role);
+
+    return success({ user: user, token: token });
+}
+
+2.2 Middleware authentication and authorization 
 
 
-Search and view corruption cases.
-Utilize data visualizations and interactive tools.
-Whistleblowers:
+function authenticateJWT(req, res, next) {
+    token = req.headers['authorization'];
+    if (!token) {
+        return res.status(401).send("Access Denied");
+    }
+
+    try {
+        decoded = verifyJWT(token);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid Token");
+    }
+}
+
+function authorizeRoles(allowedRoles) {
+    return function(req, res, next) {
+        if (!allowedRoles.includes(req.user.role)) {
+            return res.status(403).send("Forbidden");
+        }
+        next();
+    }
+}
+			2.3 Corruption Case Management 
+				2.3.1 Submit a case (route secured) 
+
+				
+					POST /api/corruption-cases
+Body: {
+    title: String,
+    description: String,
+    country: String,
+    year: Int,
+    sector: String
+}
+
+function submitCorruptionCase(req, res) {
+    // Extract data from request body
+    title = req.body.title
+    description = req.body.description
+    country = req.body.country
+    year = req.body.year
+    sector = req.body.sector
+
+    // Validate data
+    if (!validateTitle(title) || !validateDescription(description) || 
+        !validateCountry(country) || !validateYear(year)) {
+        return res.status(400).send("Invalid data");
+    }
+
+    // Create new corruption case with status 'pending'
+    newCase = database.createCorruptionCase({
+        title: title,
+        description: description,
+        country: country,
+        year: year,
+        sector: sector,
+        submitted_by: req.user.id,
+        status: 'pending'
+    });
+
+    return res.status(201).send(newCase);
+}
 
 
-Submit corruption cases anonymously.
-Track the status of their submissions without revealing their identity.
+			2.3.2 Approve/Reject the case (for analysis and admins) 
 
-8. Accessibility and User Experience
-Responsive Design: Ensure the platform is accessible on various devices and screen sizes.
-WCAG Compliance: Implement accessibility standards to support users with disabilities.
-Intuitive Navigation: Simple and clear navigation structure for easy data access.
-Performance Optimization: Fast loading times and smooth interactions to enhance user experience.
-Localization: Support multiple languages to cater to a global audience.
+			PUT /api/corruption-cases/:id/verify
+Body: {
+    verification_status: 'approved' or 'rejected',
+    comments: String
+}
 
-9. Deployment Strategy
-Environment Setup:
-Development, Staging, Production: Separate environments for development, testing, and live deployment.
-CI/CD Pipelines:
-Automated testing and deployment to ensure code quality and reduce downtime.
-Containerization:
-Use Docker containers to ensure consistency across different environments.
-Orchestration:
-Kubernetes to manage containerized applications, ensuring high availability and scalability.
-Monitoring & Logging:
-Implement comprehensive monitoring and logging to detect and respond to issues promptly.
+function verifyCorruptionCase(req, res) {
+    caseId = req.params.id
+    status = req.body.verification_status
+    comments = req.body.comments
+
+    // Retrieve the case
+    corruptionCase = database.findCorruptionCaseById(caseId)
+    if (!corruptionCase) {
+        return res.status(404).send("Case not found");
+    }
+
+    // Update case status
+    corruptionCase.status = status
+    corruptionCase.updated_at = currentTimestamp()
+    database.updateCorruptionCase(corruptionCase)
+
+    // Log verification
+    verificationLog = database.createCaseVerification({
+        case_id: caseId,
+        verified_by: req.user.id,
+        verification_status: status,
+        comments: comments
+    })
+
+    return res.status(200).send(corruptionCase)
+}
+
+
+2.3.3 Retrieve a case (public) 
+
+GET /api/corruption-cases
+Query Parameters: {
+    country: String (optional),
+    year: Int (optional),
+    sector: String (optional),
+    status: 'approved' (default to only approved cases)
+}
+
+function getCorruptionCases(req, res) {
+    // Extract query parameters
+    filters = {}
+    if (req.query.country) filters.country = req.query.country
+    if (req.query.year) filters.year = req.query.year
+    if (req.query.sector) filters.sector = req.query.sector
+    filters.status = 'approved' // Only approved cases are visible to the public
+
+    // Retrieve cases from the database
+    cases = database.findCorruptionCases(filters)
+
+    return res.status(200).send(cases)
+}
+
+
+2.3.5 Retrieve Specific Case (Public) 
+
+GET /api/corruption-cases/:id
+
+function getCorruptionCaseDetails(req, res) {
+    caseId = req.params.id
+
+    // Retrieve the case
+    corruptionCase = database.findCorruptionCaseById(caseId)
+    if (!corruptionCase || corruptionCase.status !== 'approved') {
+        return res.status(404).send("Case not found");
+    }
+
+    return res.status(200).send(corruptionCase)
+}
+
+2.4 Data Verification Module 
+	2.4.1. Automated data checks 
+
+			function automatedDataValidation(corruptionCase) {
+    // Check for required fields
+    if (isEmpty(corruptionCase.title) || isEmpty(corruptionCase.description)) {
+        return false
+    }
+
+    // Check for valid year
+    currentYear = getCurrentYear()
+    if (corruptionCase.year < 1900 || corruptionCase.year > currentYear) {
+        return false
+    }
+
+    // Additional consistency checks can be added here
+
+    return true
+}
+
+2.4.2 Integration in Submission Process
+
+function submitCorruptionCase(req, res) {
+    // Extract and validate data as before
+
+    // Automated data validation
+    isValid = automatedDataValidation(newCase)
+    if (!isValid) {
+        corruptionCase.status = 'rejected'
+    }
+
+    // Save to database
+    newCase = database.createCorruptionCase({
+        // ... data fields
+        status: isValid ? 'pending' : 'rejected'
+    })
+
+    if (!isValid) {
+        // Optionally notify the submitter about rejection
+    }
+
+    return res.status(201).send(newCase)
+}
+
+Frontend components (react.js)
+3.1 Authentication flow
+	3.1.1 Login Component 
+
+function Login() {
+    state = { email: '', password: '', error: '' }
+
+    function handleInputChange(field, value) {
+        state[field] = value
+    }
+
+    async function handleSubmit() {
+        response = await api.post('/api/auth/login', {
+            email: state.email,
+            password: state.password
+        })
+
+        if (response.success) {
+            // Store JWT token
+            localStorage.setItem('token', response.token)
+            // Redirect to dashboard or home
+            navigate('/dashboard')
+        } else {
+            state.error = response.message
+        }
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <input type="email" value={state.email} onChange={(e) => handleInputChange('email', e.target.value)} />
+            <input type="password" value={state.password} onChange={(e) => handleInputChange('password', e.target.value)} />
+            {state.error && <div>{state.error}</div>}
+            <button type="submit">Login</button>
+        </form>
+    )
+}
+
+3.2 Submit a case 
+
+function SubmitCase() {
+    state = { title: '', description: '', country: '', year: '', sector: '', error: '', success: '' }
+
+    function handleInputChange(field, value) {
+        state[field] = value
+    }
+
+    async function handleSubmit() {
+        token = localStorage.getItem('token')
+        response = await api.post('/api/corruption-cases', {
+            title: state.title,
+            description: state.description,
+            country: state.country,
+            year: state.year,
+            sector: state.sector
+        }, {
+            headers: { 'Authorization': token }
+        })
+
+        if (response.success) {
+            state.success = "Case submitted successfully and is pending approval."
+        } else {
+            state.error = response.message
+        }
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <input type="text" value={state.title} onChange={(e) => handleInputChange('title', e.target.value)} placeholder="Title" />
+            <textarea value={state.description} onChange={(e) => handleInputChange('description', e.target.value)} placeholder="Description"></textarea>
+            <input type="text" value={state.country} onChange={(e) => handleInputChange('country', e.target.value)} placeholder="Country" />
+            <input type="number" value={state.year} onChange={(e) => handleInputChange('year', e.target.value)} placeholder="Year" />
+            <input type="text" value={state.sector} onChange={(e) => handleInputChange('sector', e.target.value)} placeholder="Sector" />
+            {state.error && <div>{state.error}</div>}
+            {state.success && <div>{state.success}</div>}
+            <button type="submit">Submit Case</button>
+        </form>
+    )
+}
+
+3.3 Case list and search feature 
+
+function SubmitCase() {
+    state = { title: '', description: '', country: '', year: '', sector: '', error: '', success: '' }
+
+    function handleInputChange(field, value) {
+        state[field] = value
+    }
+
+    async function handleSubmit() {
+        token = localStorage.getItem('token')
+        response = await api.post('/api/corruption-cases', {
+            title: state.title,
+            description: state.description,
+            country: state.country,
+            year: state.year,
+            sector: state.sector
+        }, {
+            headers: { 'Authorization': token }
+        })
+
+        if (response.success) {
+            state.success = "Case submitted successfully and is pending approval."
+        } else {
+            state.error = response.message
+        }
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <input type="text" value={state.title} onChange={(e) => handleInputChange('title', e.target.value)} placeholder="Title" />
+            <textarea value={state.description} onChange={(e) => handleInputChange('description', e.target.value)} placeholder="Description"></textarea>
+            <input type="text" value={state.country} onChange={(e) => handleInputChange('country', e.target.value)} placeholder="Country" />
+            <input type="number" value={state.year} onChange={(e) => handleInputChange('year', e.target.value)} placeholder="Year" />
+            <input type="text" value={state.sector} onChange={(e) => handleInputChange('sector', e.target.value)} placeholder="Sector" />
+            {state.error && <div>{state.error}</div>}
+            {state.success && <div>{state.success}</div>}
+            <button type="submit">Submit Case</button>
+        </form>
+    )
+}
+
+3.4 Case Details page 
+
+function CaseDetails({ caseId }) {
+    state = { corruptionCase: null, error: '' }
+
+    useEffect(() => {
+        fetchCaseDetails()
+    }, [caseId])
+
+    async function fetchCaseDetails() {
+        response = await api.get(`/api/corruption-cases/${caseId}`)
+
+        if (response.success) {
+            state.corruptionCase = response.data
+        } else {
+            state.error = response.message
+        }
+    }
+
+    if (state.error) {
+        return <div>{state.error}</div>
+    }
+
+    if (!state.corruptionCase) {
+        return <div>Loading...</div>
+    }
+
+    return (
+        <div>
+            <h1>{state.corruptionCase.title}</h1>
+            <p>{state.corruptionCase.description}</p>
+            <p>Country: {state.corruptionCase.country}</p>
+            <p>Year: {state.corruptionCase.year}</p>
+            <p>Sector: {state.corruptionCase.sector}</p>
+        </div>
+    )
+}
+
+4. Sample Pseudocode for Key Backend Components
+4.1. Server Initialization
+function initializeServer() {
+    app = express()
+    // Middleware
+    app.use(express.json())
+    app.use(cors())
+    // Routes
+    app.post('/api/auth/register', registerUser)
+    app.post('/api/auth/login', loginUser)
+    // Protected Routes
+    app.post('/api/corruption-cases', authenticateJWT, authorizeRoles(['admin', 'data_analyst', 'user']), submitCorruptionCase)
+    app.put('/api/corruption-cases/:id/verify', authenticateJWT, authorizeRoles(['admin', 'data_analyst']), verifyCorruptionCase)
+    app.get('/api/corruption-cases', getCorruptionCases)
+    app.get('/api/corruption-cases/:id', getCorruptionCaseDetails)
+    // Start Server
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`)
+    })
+}
+4.2. Utility Functions
+4.2.1. JWT Generation and Verification
+function generateJWT(userId, role) {
+    payload = { id: userId, role: role, iat: currentTimestamp() }
+    token = jwt.sign(payload, SECRET_KEY, { expiresIn: '2h' })
+    return token
+}
+function verifyJWT(token) {
+    payload = jwt.verify(token, SECRET_KEY)
+    return payload
+}
+4.2.2. Password Hashing and Verification
+function hashPassword(password) {
+    salt = bcrypt.genSaltSync(10)
+    hash = bcrypt.hashSync(password, salt)
+    return hash
+}
+function verifyPassword(password, hash) {
+    return bcrypt.compareSync(password, hash)
+}
+
+5. Sample Pseudocode for Frontend API Calls
+5.1. API Utility
+const api = {
+    async post(endpoint, data, config={}) {
+        response = await fetch(BASE_URL + endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...config.headers },
+            body: JSON.stringify(data)
+        })
+        return await response.json()
+    },
+    async get(endpoint, config={}) {
+        response = await fetch(BASE_URL + endpoint, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', ...config.headers }
+        })
+        return await response.json()
+    },
+    // Similarly, implement PUT, DELETE if needed
+}
+5.2. Authentication Handling
+function setAuthToken(token) {
+    if (token) {
+        api.defaults.headers.common['Authorization'] = token
+    } else {
+        delete api.defaults.headers.common['Authorization']
+    }
+}
+function logout() {
+    localStorage.removeItem('token')
+    setAuthToken(null)
+    navigate('/login')
+}
+6. Data Verification Process
+6.1. Automated Checks (Backend)
+function automatedDataValidation(corruptionCase) {
+    // Example validations
+    if (isEmpty(corruptionCase.title) || isEmpty(corruptionCase.description)) {
+        return false
+    }
+    if (!isValidYear(corruptionCase.year)) {
+        return false
+    }
+    // Additional rules can be added here
+    return true
+}
+function submitCorruptionCase(req, res) {
+    // Extract and validate data as previously outlined
+    // Automated validation
+    isValid = automatedDataValidation(newCase)
+    if (!isValid) {
+        corruptionCase.status = 'rejected'
+    }
+    // Save to database
+    newCase = database.createCorruptionCase({
+        // ... data fields
+        status: isValid ? 'pending' : 'rejected'
+    })
+    // Optionally notify submitter or analyst
+    return res.status(201).send(newCase)
+}
+6.2. Manual Review Interface (Admin Dashboard)
+6.2.1. Approve or Reject Case
+function approveOrRejectCase(caseId, verificationStatus, comments, verifiedBy) {
+    // Retrieve the case
+    corruptionCase = database.findCorruptionCaseById(caseId)
+    if (!corruptionCase) {
+        return error("Case not found")
+    }
+    // Update status
+    corruptionCase.status = verificationStatus
+    corruptionCase.updated_at = currentTimestamp()
+    database.updateCorruptionCase(corruptionCase)
+    // Log the verification
+    verificationLog = database.createCaseVerification({
+        case_id: caseId,
+        verified_by: verifiedBy,
+        verification_status: verificationStatus,
+        comments: comments
+    })
+    return success(corruptionCase)
+}
+7. Frontend Interactive Components
+7.1. Filter Component
+function FilterComponent({ filters, onChange }) {
+    function handleFilterUpdate(field, value) {
+        onChange(field, value)
+    }
+    return (
+        <div>
+            <select onChange={(e) => handleFilterUpdate('country', e.target.value)}>
+                <option value="">All Countries</option>
+                <!-- Populate with country options -->
+            </select>
+            <input type="number" placeholder="Year" onChange={(e) => handleFilterUpdate('year', e.target.value)} />
+            <select onChange={(e) => handleFilterUpdate('sector', e.target.value)}>
+                <option value="">All Sectors</option>
+                <!-- Populate with sector options -->
+            </select>
+            <button onClick={fetchCases}>Apply Filters</button>
+        </div>
+    )
+}
+7.2. Admin Dashboard for Data Analysts
+function AdminDashboard() {
+    state = { pendingCases: [], error: '' }
+    useEffect(() => {
+        fetchPendingCases()
+    }, [])
+    async function fetchPendingCases() {
+        response = await api.get('/api/corruption-cases?status=pending', {
+            headers: { 'Authorization': getToken() }
+        })
+        if (response.success) {
+            state.pendingCases = response.data
+        } else {
+            state.error = response.message
+        }
+    }
+    async function handleVerification(caseId, status, comments) {
+        response = await api.put(`/api/corruption-cases/${caseId}/verify`, {
+            verification_status: status,
+            comments: comments
+        }, {
+            headers: { 'Authorization': getToken() }
+        })
+        if (response.success) {
+            // Update the UI accordingly
+            fetchPendingCases()
+        } else {
+            state.error = response.message
+        }
+    }
+    return (
+        <div>
+            <h2>Pending Corruption Cases</h2>
+            {state.error && <div>{state.error}</div>}
+            <ul>
+                {state.pendingCases.map(case => (
+                    <li key={case.id}>
+                        <h3>{case.title}</h3>
+                        <p>{case.description}</p>
+                        <button onClick={() => handleVerification(case.id, 'approved', 'Looks good')}>Approve</button>
+                        <button onClick={() => handleVerification(case.id, 'rejected', 'Insufficient details')}>Reject</button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )
+}
+8. Sample Pseudocode for Search Functionality
+8.1. Backend Search Endpoint
+GET /api/corruption-cases?country=X&year=Y&sector=Z
+function getCorruptionCases(req, res) {
+    // Extract query parameters
+    filters = {}
+    if (req.query.country) filters.country = req.query.country
+    if (req.query.year) filters.year = req.query.year
+    if (req.query.sector) filters.sector = req.query.sector
+    filters.status = 'approved' // Only approved cases are visible to the public
+    // Retrieve cases from the database
+    cases = database.findCorruptionCases(filters)
+    return res.status(200).send(cases)
+}
+8.2. Frontend Handling of Search Filters
+function buildQueryString(filters) {
+    parts = []
+    if (filters.country) parts.push(`country=${encodeURIComponent(filters.country)}`)
+    if (filters.year) parts.push(`year=${encodeURIComponent(filters.year)}`)
+    if (filters.sector) parts.push(`sector=${encodeURIComponent(filters.sector)}`)
+    return parts.length > 0 ? '?' + parts.join('&') : ''
+}
+9. Additional Utility Pseudocode
+9.1. Error Handling Middleware (Backend)
+function errorHandler(err, req, res, next) {
+    console.error(err.stack)
+    res.status(500).send({ error: 'Something went wrong!' })
+}
+// Usage
+app.use(errorHandler)
+9.2. API Rate Limiting (Backend)
+function rateLimiter(req, res, next) {
+    userIP = req.ip
+    currentTime = currentTimestamp()
+    if (!rateLimitStore[userIP]) {
+        rateLimitStore[userIP] = { count: 1, lastRequest: currentTime }
+        next()
+    } else {
+        elapsed = currentTime - rateLimitStore[userIP].lastRequest
+        if (elapsed < TIME_WINDOW) {
+            rateLimitStore[userIP].count += 1
+            if (rateLimitStore[userIP].count > MAX_REQUESTS) {
+                return res.status(429).send("Too many requests")
+            }
+        } else {
+            rateLimitStore[userIP] = { count: 1, lastRequest: currentTime }
+        }
+        next()
+    }
+}
+// Usage
+app.use(rateLimiter)
+
+10. Testing Pseudocode
+10.1. Unit Test for Authentication (Backend)
+function testLoginUser_Success() {
+    // Setup: Create a test user
+    testUser = database.createUser({
+        username: "testuser",
+        email: "test@example.com",
+        password_hash: hashPassword("SecurePass123"),
+        role: 'user'
+    })
+    // Action: Attempt to login
+    response = loginUser("test@example.com", "SecurePass123")
+    // Assertion: Check if login is successful and token is returned
+    assert(response.success == true)
+    assert(response.token exists)
+}
+function testLoginUser_IncorrectPassword() {
+    // Setup: Create a test user
+    testUser = database.createUser({
+        username: "testuser2",
+        email: "test2@example.com",
+        password_hash: hashPassword("SecurePass123"),
+        role: 'user'
+    })
+    // Action: Attempt to login with wrong password
+    response = loginUser("test2@example.com", "WrongPass")
+    // Assertion: Check if login fails
+    assert(response.success == false)
+    assert(response.message == "Incorrect password")
+}
+10.2. Integration Test for Case Submission and Approval
+function testCaseSubmissionAndApproval() {
+    // Setup: Create and login an admin user
+    adminUser = database.createUser({
+        username: "admin",
+        email: "admin@example.com",
+        password_hash: hashPassword("AdminPass123"),
+        role: 'admin'
+    })
+    adminToken = generateJWT(adminUser.id, adminUser.role)
+    // Action: Submit a new corruption case
+    submissionResponse = submitCorruptionCase({
+        title: "Bribery in Construction",
+        description: "Details about the bribery case...",
+        country: "CountryX",
+        year: 2023,
+        sector: "Construction"
+    }, { headers: { 'Authorization': adminToken } })
+    // Assertion: Check if case is created with 'pending' status
+    assert(submissionResponse.status == 'pending')
+    // Action: Approve the case
+    approvalResponse = verifyCorruptionCase(submissionResponse.id, 'approved', "Verified and approved", adminUser.id)
+    // Assertion: Check if case status is updated to 'approved'
+    assert(approvalResponse.status == 'approved')
+    // Action: Retrieve the case details
+    caseDetails = getCorruptionCaseDetails(submissionResponse.id)
+    // Assertion: Check if case is retrievable and approved
+    assert(caseDetails.status == 'approved')
+}
+
+11. Sampling FE Routes
+
+12. Considerations:
+12.1 Environment Variables (Backend)
+12.2 Configurations of CORS (BE)
+12.3 Error Handling and FE API calls
+12. 4 Secureing API Endpoints 
+
+13. Deployment Pseudocode 
+13.1 Dockerfile for BE
+13.2 Docker Compose for Development 
+13.3 CI/CD Pipeline 
+
+
+14. Database Sources (Where to gather data + Web scraping mechanics)
 
