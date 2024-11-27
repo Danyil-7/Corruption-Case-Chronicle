@@ -1,0 +1,136 @@
+13. Deployment Pseudocode 
+13.1 Dockerfile for BE
+
+# Base Image
+FROM node:14
+
+# Set Working Directory
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package.json ./
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Expose Port
+EXPOSE 5000
+
+# Start the Server
+CMD ["npm", "start"]
+
+
+13.2 Docker Compose for Development 
+
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://username:password@db:5432/corruption_db
+      - SECRET_KEY=your_jwt_secret_key
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: corruption_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+
+13.3 CI/CD Pipeline 
+
+# .github/workflows/ci-cd.yml
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: username
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: corruption_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies (Backend)
+        run: |
+          cd backend
+          npm install
+
+      - name: Run Backend Tests
+        run: |
+          cd backend
+          npm test
+
+      - name: Install Dependencies (Frontend)
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run Frontend Tests
+        run: |
+          cd frontend
+          npm test
+
+      - name: Build and Push Docker Images
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: yourdockerhubusername/corruption-db-backend:latest, yourdockerhubusername/corruption-db-frontend:latest
+
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@v2.1.5
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          remote-user: youruser
+          server-ip: your.server.ip
+          remote-path: /path/to/deploy
+          script: |
+            docker pull yourdockerhubusername/corruption-db-backend:latest
+            docker pull yourdockerhubusername/corruption-db-frontend:latest
+            docker-compose -f /path/to/docker-compose.yml up -d --build
